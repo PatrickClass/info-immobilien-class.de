@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<title>Wohnungsübergabeprotokoll</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --paper:#FAFAF7;
+  --paper-alt:#F1EEE6;
+  --ink:#1F2937;
+  --ink-soft:#5B6472;
+  --navy:#1E3A5F;
+  --navy-soft:#2E4C74;
+  --red:#B23A2F;
+  --green:#4A6741;
+  --line:#D8D3C7;
+  --line-soft:#E7E3D8;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--paper-alt);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  padding:32px 16px 80px;
+}
+.sheet{
+  max-width:840px;
+  margin:0 auto;
+  background:var(--paper);
+  border:1px solid var(--line);
+  box-shadow:0 2px 0 var(--line), 0 24px 48px -24px rgba(30,58,95,0.25);
+  position:relative;
+  padding:48px 48px 32px;
+}
+.stamp{
+  position:absolute;
+  top:36px; right:40px;
+  border:2px solid var(--red);
+  color:var(--red);
+  padding:8px 14px;
+  transform:rotate(-4deg);
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;
+  line-height:1.5;
+  text-align:center;
+  border-radius:2px;
+  opacity:0.85;
+  white-space:nowrap;
+}
+.stamp b{display:block;font-size:12px;letter-spacing:0.05em;}
+
+.title-block{margin-bottom:8px;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  color:var(--navy);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+h1{
+  font-family:'Fraunces',serif;
+  font-weight:700;
+  font-size:34px;
+  margin:4px 0 2px;
+  color:var(--ink);
+}
+.subtitle{color:var(--ink-soft);font-size:14px;margin-bottom:28px;}
+
+section.para{
+  border-top:1px solid var(--line);
+  padding:26px 0;
+}
+section.para:first-of-type{border-top:2px solid var(--ink);}
+.para-head{
+  display:flex;align-items:baseline;gap:10px;
+  margin-bottom:16px;
+}
+.para-num{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:15px;
+  color:var(--navy);
+}
+.para-title{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  font-size:19px;
+}
+.para-hint{
+  font-size:12.5px;
+  color:var(--ink-soft);
+  margin:-10px 0 16px;
+}
+
+label.field-label{
+  display:block;
+  font-size:11.5px;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+  letter-spacing:0.05em;
+  margin-bottom:5px;
+}
+input[type=text], input[type=date], textarea, select{
+  width:100%;
+  font-family:'Inter',sans-serif;
+  font-size:14.5px;
+  color:var(--ink);
+  background:#fff;
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:9px 11px;
+}
+input[type=text]:focus, input[type=date]:focus, textarea:focus, select:focus{
+  outline:2px solid var(--navy-soft);
+  outline-offset:1px;
+  border-color:var(--navy-soft);
+}
+textarea{resize:vertical;min-height:44px;}
+.mono{font-family:'JetBrains Mono',monospace;}
+
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 140px;gap:16px;}
+@media(max-width:640px){.grid2,.grid3{grid-template-columns:1fr;}}
+
+.row-flex{display:flex;gap:10px;align-items:flex-end;margin-bottom:10px;}
+.row-flex > div{flex:1;}
+
+.btn{
+  font-family:'Inter',sans-serif;
+  font-size:13px;
+  font-weight:600;
+  border:1px solid var(--navy);
+  background:var(--navy);
+  color:#fff;
+  padding:9px 16px;
+  border-radius:3px;
+  cursor:pointer;
+}
+.btn:hover{background:var(--navy-soft);}
+.btn.ghost{background:transparent;color:var(--navy);}
+.btn.ghost:hover{background:var(--paper-alt);}
+.btn.danger{background:transparent;color:var(--red);border-color:var(--red);}
+.btn.danger:hover{background:#fbeceb;}
+.btn.small{padding:6px 11px;font-size:12px;}
+
+.attendee-row, .meter-card, .room-card, .mangel-row{
+  border:1px solid var(--line-soft);
+  border-radius:4px;
+  padding:16px;
+  margin-bottom:12px;
+  background:#fff;
+}
+
+.meter-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.meter-name{font-weight:600;font-size:15px;}
+.check-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;
+  cursor:pointer;
+  user-select:none;
+  padding:5px 10px;
+  border:1px solid var(--line);
+  border-radius:20px;
+}
+.check-pill input{width:14px;height:14px;accent-color:var(--green);}
+.check-pill.on{border-color:var(--green);color:var(--green);background:#f2f6f0;}
+
+.toggle-off-note{color:var(--ink-soft);font-size:13px;font-style:italic;}
+
+.photo-row{display:flex;gap:12px;align-items:flex-start;flex-wrap:wrap;margin-top:10px;}
+.thumb{
+  width:220px;height:220px;object-fit:cover;
+  border-radius:4px;border:1px solid var(--line);
+  cursor:zoom-in;
+}
+.thumb-wrap{position:relative;display:inline-block;}
+.thumb-remove{
+  position:absolute;top:-8px;right:-8px;
+  width:22px;height:22px;border-radius:50%;
+  background:var(--red);color:#fff;border:none;
+  font-size:13px;line-height:1;cursor:pointer;
+}
+.lightbox{
+  position:fixed;inset:0;
+  background:rgba(20,20,20,0.92);
+  display:none;
+  align-items:center;justify-content:center;
+  z-index:9999;
+  cursor:zoom-out;
+  padding:24px;
+}
+.lightbox.open{display:flex;}
+.lightbox img{
+  max-width:100%;max-height:100%;
+  border-radius:4px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.5);
+}
+.upload-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:12.5px;color:var(--navy);
+  border:1px dashed var(--line);
+  padding:9px 12px;border-radius:3px;
+  cursor:pointer;background:var(--paper-alt);
+}
+.upload-btn input{display:none;}
+
+.room-head{display:flex;justify-content:space-between;align-items:center;cursor:pointer;}
+.room-head-left{display:flex;align-items:center;gap:12px;flex:1;}
+.room-index{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12px;color:var(--ink-soft);
+  width:20px;
+}
+.room-body{margin-top:16px;display:none;}
+.room-card.open .room-body{display:block;}
+.chevron{transition:transform .15s;color:var(--ink-soft);}
+.room-card.open .chevron{transform:rotate(90deg);}
+.mangel-count{
+  font-family:'JetBrains Mono',monospace;
+  font-size:11px;color:var(--red);
+  background:#fbeceb;padding:2px 7px;border-radius:10px;
+}
+
+.mangel-row{display:flex;gap:12px;align-items:flex-start;background:var(--paper-alt);}
+.mangel-row textarea{background:#fff;}
+
+.sig-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+@media(max-width:640px){.sig-grid{grid-template-columns:1fr;}}
+.sig-box canvas{
+  width:100%;height:120px;
+  border:1px solid var(--line);
+  border-radius:3px;
+  background:#fff;
+  touch-action:none;
+}
+.sig-label{font-weight:600;font-size:14px;margin-bottom:8px;}
+
+.footer-bar{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:8px;flex-wrap:wrap;gap:12px;
+}
+.save-status{font-size:12px;color:var(--ink-soft);font-family:'JetBrains Mono',monospace;}
+.save-status.ok{color:var(--green);}
+
+@media print{
+  body{background:#fff;padding:0;}
+  .sheet{box-shadow:none;border:none;max-width:100%;padding:20px 32px;}
+  .no-print{display:none !important;}
+  .room-body{display:block !important;}
+  .chevron{display:none;}
+  section.para{page-break-inside:avoid;}
+}
+body.exporting .no-print{display:none !important;}
+body.exporting .room-body{display:block !important;}
+body.exporting .chevron{display:none;}
+body.exporting .sheet{box-shadow:none;}
+
+.grund-toggle{display:flex;gap:10px;margin-bottom:18px;}
+.grund-option{
+  flex:1;text-align:center;
+  border:1px solid var(--line);
+  border-radius:3px;
+  padding:11px;
+  cursor:pointer;
+  font-weight:600;
+  font-size:14px;
+  color:var(--ink-soft);
+  background:#fff;
+}
+.grund-option.active{
+  border-color:var(--navy);
+  background:var(--navy);
+  color:#fff;
+}
+.grund-option input{display:none;}
+
+.banner{
+  border:1px solid var(--green);
+  background:#f2f6f0;
+  color:var(--green);
+  border-radius:4px;
+  padding:14px 16px;
+  font-size:14px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+.banner.pending{border-color:var(--line);background:var(--paper-alt);color:var(--ink-soft);}
+
+.finish-block{
+  border-top:2px solid var(--ink);
+  margin-top:28px;
+  padding-top:24px;
+  text-align:center;
+}
+.btn-finish{
+  font-family:'Inter',sans-serif;
+  font-size:16px;
+  font-weight:600;
+  border:none;
+  background:var(--green);
+  color:#fff;
+  padding:15px 40px;
+  border-radius:4px;
+  cursor:pointer;
+  letter-spacing:0.02em;
+}
+.btn-finish:hover{filter:brightness(1.08);}
+.btn-finish:disabled{opacity:0.55;cursor:not-allowed;}
+.finish-hint{font-size:12.5px;color:var(--ink-soft);margin-top:10px;}
+
+.overlay{
+  position:fixed;inset:0;
+  background:rgba(30,58,95,0.96);
+  display:none;
+  flex-direction:column;
+  align-items:center;justify-content:center;
+  z-index:10000;
+  color:#fff;text-align:center;padding:24px;
+}
+.overlay.open{display:flex;}
+.overlay .steps{margin:24px 0;font-family:'JetBrains Mono',monospace;font-size:14px;line-height:2;}
+.overlay .step-done{color:#9DE29A;}
+.overlay .step-run{color:#FFE08A;}
+.overlay .step-wait{color:#9FB3CC;}
+.overlay h2{font-family:'Fraunces',serif;font-size:30px;margin:0 0 6px;}
+.overlay p{color:#C7D4E4;font-size:14px;max-width:420px;}
+.overlay .check{
+  width:74px;height:74px;border-radius:50%;
+  border:3px solid #9DE29A;color:#9DE29A;
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;margin-bottom:8px;
+}
+.overlay .btn-new{
+  margin-top:26px;
+  font-family:'Inter',sans-serif;font-size:15px;font-weight:600;
+  background:#fff;color:var(--navy);border:none;
+  padding:13px 30px;border-radius:4px;cursor:pointer;
+}
+.spinner{
+  width:60px;height:60px;border-radius:50%;
+  border:5px solid rgba(255,255,255,0.25);
+  border-top-color:#fff;
+  animation:spin 0.9s linear infinite;
+  margin-bottom:18px;
+}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightboxImg" src="">
+</div>
+
+<div class="overlay" id="finishOverlay">
+  <div id="finishProgress">
+    <div class="spinner"></div>
+    <h2>Vorgang wird abgeschlossen …</h2>
+    <div class="steps" id="finishSteps">
+      <div id="stepPdf" class="step-wait">◦ PDF erstellen &amp; Mailversand</div>
+      <div id="stepNotion" class="step-wait">◦ Daten in Notion ablegen</div>
+    </div>
+    <p>Bitte den Mailversand im geöffneten Teilen-/Mailfenster abschließen.</p>
+  </div>
+  <div id="finishDone" style="display:none;">
+    <div class="check">✓</div>
+    <h2>Vorgang abgeschlossen</h2>
+    <p>PDF wurde erzeugt und die Daten in Notion abgelegt. Das Formular ist jetzt leer und bereit für die nächste Wohnung.</p>
+    <button class="btn-new" onclick="closeFinishOverlay()">Neue Wohnung starten</button>
+  </div>
+</div>
+
+<div class="sheet">
+  <div class="stamp" id="stamp"><b>AKTENZEICHEN</b><span id="stampId">WÜ-000000</span></div>
+  <div class="title-block">
+    <div class="eyebrow">Übergabeprotokoll</div>
+    <h1>Wohnungsübergabe</h1>
+    <div class="subtitle">Vollständige Dokumentation von Zählerständen, Räumen und Mängeln bei Ein- oder Auszug.</div>
+  </div>
+
+  <section class="para">
+    <div class="para-head"><span class="para-num">§1</span><span class="para-title">Objektdaten</span></div>
+
+    <label class="field-label">Grund der Übergabe</label>
+    <div class="grund-toggle">
+      <label class="grund-option" id="grundEinzugLabel"><input type="radio" name="grund" value="Einzug" onchange="setGrund('Einzug')">Einzug</label>
+      <label class="grund-option" id="grundAuszugLabel"><input type="radio" name="grund" value="Auszug" onchange="setGrund('Auszug')">Auszug</label>
+    </div>
+
+    <div id="meldeanschriftBlock" style="display:none;margin-bottom:16px;">
+      <label class="field-label">Neue Meldeanschrift des Mieters</label>
+      <textarea id="neueMeldeanschrift" rows="2" placeholder="Straße, Hausnummer, PLZ Ort"></textarea>
+    </div>
+
+    <label class="field-label">Objektanschrift</label>
+    <textarea id="address" rows="2" placeholder="Straße, Hausnummer, PLZ Ort"></textarea>
+    <div class="grid2" style="margin-top:14px;">
+      <div>
+        <label class="field-label">Lage / Bezeichnung der Wohnung</label>
+        <input type="text" id="lage" placeholder="z.B. 2. OG rechts, Whg. 4">
+      </div>
+      <div>
+        <label class="field-label">Datum der Übergabe</label>
+        <input type="date" id="datum">
+      </div>
+    </div>
+
+    <label class="field-label" style="margin-top:18px;">Anwesende Personen</label>
+    <div id="attendeeList"></div>
+    <button class="btn ghost small no-print" onclick="addAttendee()">+ Person hinzufügen</button>
+
+    <label class="field-label" style="margin-top:18px;">Kontakt Mieter</label>
+    <div class="grid2">
+      <div>
+        <label class="field-label">Handynummer</label>
+        <input type="text" id="mieterHandy" class="mono" placeholder="+49 …">
+      </div>
+      <div>
+        <label class="field-label">E-Mail-Adresse</label>
+        <input type="text" id="mieterEmail" class="mono" placeholder="name@beispiel.de">
+      </div>
+    </div>
+  </section>
+
+  <section class="para">
+    <div class="para-head"><span class="para-num">§2</span><span class="para-title">Zählerstände &amp; Pflichtfotos</span></div>
+    <div class="para-hint">Für jeden Zähler ist ein Foto anzufertigen. Stand und Zählernummer bitte zusätzlich notieren.</div>
+    <div id="meterList"></div>
+  </section>
+
+  <section class="para">
+    <div class="para-head"><span class="para-num">§3</span><span class="para-title">Raumprüfung &amp; Mängel</span></div>
+    <div class="para-hint">Alle 8 Raum-Slots benennen. Mängel je Raum mit Beschreibung und Foto dokumentieren.</div>
+    <div id="roomList"></div>
+  </section>
+
+  <section class="para">
+    <div class="para-head"><span class="para-num">§4</span><span class="para-title">Unterschriften</span></div>
+    <div class="grid2" style="margin-bottom:18px;">
+      <div>
+        <label class="field-label">Ort</label>
+        <input type="text" id="sigOrt" placeholder="Ort der Übergabe">
+      </div>
+      <div>
+        <label class="field-label">Datum</label>
+        <input type="date" id="sigDatum">
+      </div>
+    </div>
+    <div class="sig-grid">
+      <div class="sig-box">
+        <div class="sig-label">Übergeber / Vermieter</div>
+        <canvas id="sigUebergeber" width="360" height="120"></canvas>
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+          <input type="text" id="nameUebergeber" placeholder="Name in Druckschrift" style="flex:1;">
+          <button class="btn ghost small no-print" onclick="clearSig('sigUebergeber')">Löschen</button>
+        </div>
+      </div>
+      <div class="sig-box">
+        <div class="sig-label">Übernehmer / Mieter</div>
+        <canvas id="sigUebernehmer" width="360" height="120"></canvas>
+        <div style="margin-top:8px;display:flex;gap:8px;align-items:center;">
+          <input type="text" id="nameUebernehmer" placeholder="Name in Druckschrift" style="flex:1;">
+          <button class="btn ghost small no-print" onclick="clearSig('sigUebernehmer')">Löschen</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="banner pending no-print" id="signBanner">
+      <span id="signBannerText">Noch keine der beiden Unterschriften vorhanden.</span>
+    </div>
+
+    <div class="finish-block no-print">
+      <button class="btn-finish" id="finishBtn" onclick="finalizeProtocol()">Vorgang fertigstellen</button>
+      <div class="finish-hint">
+        Erzeugt die PDF (inkl. aller Fotos), öffnet den Mailversand an Mieter &amp; info@immobilien-class.de und legt die Textdaten in Notion ab. Danach wird das Formular für die nächste Wohnung geleert.
+      </div>
+    </div>
+  </section>
+
+  <div class="footer-bar no-print">
+    <div>
+      <button class="btn" onclick="forceSave()">Speichern</button>
+      <button class="btn ghost" onclick="window.print()">Drucken / PDF</button>
+      <button class="btn danger" onclick="resetAll()">Zurücksetzen</button>
+    </div>
+    <div class="save-status" id="saveStatus">Noch nicht gespeichert</div>
+  </div>
+</div>
+
+<script>
+const METER_DEFS = [
+  {id:'wasserZentral', label:'Wasseruhr zentral'},
+  {id:'wasserWohnung', label:'Wasseruhr in der Wohnung', toggleable:true},
+  {id:'stromWohnung', label:'Stromzähler Wohnung'},
+  {id:'stromAllgemein', label:'Stromzähler Allgemein'},
+  {id:'gasOel', label:'Gaszähler / Ölstand'}
+];
+const ROOM_COUNT = 8;
+const STORAGE_KEY = 'wohnungsuebergabe:protocol';
+
+function defaultState(){
+  const meters = {};
+  METER_DEFS.forEach(m => meters[m.id] = {vorhanden:true, nummer:'', stand:'', notiz:'', fotoErstellt:false, photo:null});
+  const rooms = [];
+  for(let i=0;i<ROOM_COUNT;i++) rooms.push({name:'', photos:[], maengel:[]});
+  return {
+    address:'', lage:'', datum:'',
+    grund:'', neueMeldeanschrift:'',
+    mieterHandy:'', mieterEmail:'',
+    attendees:[{name:'',role:'Mieter'}],
+    meters, rooms,
+    sig:{ort:'', datum:'', nameUebergeber:'', nameUebernehmer:'', imgUebergeber:null, imgUebernehmer:null}
+  };
+}
+
+let state = defaultState();
+let saveTimer = null;
+let expiryTimer = null;
+const EXPIRY_MS = 30 * 60 * 1000; // 30 Minuten
+
+function setStatus(text, ok){
+  const el = document.getElementById('saveStatus');
+  el.textContent = text;
+  el.className = 'save-status' + (ok ? ' ok' : '');
+}
+
+function scheduleSave(){
+  setStatus('Änderungen werden gespeichert …', false);
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(saveState, 700);
+  resetExpiryTimer();
+}
+
+async function saveState(){
+  try{
+    const envelope = { ts: Date.now(), data: state };
+    const result = await window.storage.set(STORAGE_KEY, JSON.stringify(envelope), false);
+    if(result){
+      const t = new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'});
+      setStatus('Gespeichert · ' + t, true);
+    } else {
+      setStatus('Speichern fehlgeschlagen', false);
+    }
+  }catch(e){
+    setStatus('Speicherfehler: ' + e.message, false);
+  }
+}
+
+function forceSave(){ clearTimeout(saveTimer); saveState(); }
+
+async function clearStorage(){
+  try{ await window.storage.delete(STORAGE_KEY, false); }catch(e){}
+}
+
+// Startet/erneuert den 30-Minuten-Timer, nach dem der Vorgang automatisch geleert wird
+function resetExpiryTimer(){
+  clearTimeout(expiryTimer);
+  expiryTimer = setTimeout(async () => {
+    await clearStorage();
+    state = defaultState();
+    renderAll();
+    setStatus('Nach 30 Min. automatisch geleert', false);
+  }, EXPIRY_MS);
+}
+
+async function loadState(){
+  try{
+    const result = await window.storage.get(STORAGE_KEY, false);
+    if(result && result.value){
+      const parsed = JSON.parse(result.value);
+      const ts = parsed && parsed.ts ? parsed.ts : 0;
+      const loaded = parsed && parsed.data ? parsed.data : null;
+      const age = Date.now() - ts;
+      if(loaded && age <= EXPIRY_MS){
+        state = Object.assign(defaultState(), loaded);
+        METER_DEFS.forEach(m => { if(!state.meters[m.id]) state.meters[m.id] = {vorhanden:true, nummer:'', stand:'', notiz:'', fotoErstellt:false, photo:null}; });
+        while(state.rooms.length < ROOM_COUNT) state.rooms.push({name:'', photos:[], maengel:[]});
+        setStatus('Laufender Vorgang geladen', true);
+      } else {
+        // Älter als 30 Minuten -> verwerfen und leer starten
+        await clearStorage();
+        state = defaultState();
+        setStatus('Neues Protokoll', false);
+      }
+    } else {
+      setStatus('Neues Protokoll', false);
+    }
+  }catch(e){
+    setStatus('Neues Protokoll', false);
+  }
+  renderAll();
+  resetExpiryTimer();
+}
+
+function resetAll(){
+  if(!confirm('Wirklich alle Eingaben dieses Protokolls löschen?')) return;
+  state = defaultState();
+  renderAll();
+  clearStorage();
+  setStatus('Geleert', false);
+}
+
+// ---------- image helper ----------
+function resizeImage(file, maxWidth, quality){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const img = new Image();
+      img.onload = () => {
+        const scale = Math.min(1, maxWidth / img.width);
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function thumbHtml(src, onRemove){
+  return `<div class="thumb-wrap"><img class="thumb" src="${src}" onclick="openLightbox(this.src)"><button class="thumb-remove no-print" onclick="event.stopPropagation(); ${onRemove}">×</button></div>`;
+}
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+
+// ---------- header stamp ----------
+function updateStamp(){
+  const d = state.datum ? state.datum.replace(/-/g,'') : new Date().toISOString().slice(0,10).replace(/-/g,'');
+  document.getElementById('stampId').textContent = 'WÜ-' + d;
+}
+
+// ---------- attendees ----------
+function renderAttendees(){
+  const c = document.getElementById('attendeeList');
+  c.innerHTML = '';
+  state.attendees.forEach((a, i) => {
+    const row = document.createElement('div');
+    row.className = 'row-flex';
+    row.innerHTML = `
+      <div><input type="text" placeholder="Name" value="${escAttr(a.name)}" oninput="state.attendees[${i}].name=this.value; scheduleSave();"></div>
+      <div style="max-width:180px;">
+        <select onchange="state.attendees[${i}].role=this.value; scheduleSave();">
+          ${['Vermieter/Verwalter','Mieter','Zeuge','Sonstige'].map(r => `<option ${a.role===r?'selected':''}>${r}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn danger small no-print" onclick="removeAttendee(${i})">Entfernen</button>
+    `;
+    c.appendChild(row);
+  });
+}
+function addAttendee(){ state.attendees.push({name:'',role:'Mieter'}); renderAttendees(); scheduleSave(); }
+function removeAttendee(i){ state.attendees.splice(i,1); renderAttendees(); scheduleSave(); }
+
+// ---------- meters ----------
+function renderMeters(){
+  const c = document.getElementById('meterList');
+  c.innerHTML = '';
+  METER_DEFS.forEach(def => {
+    const m = state.meters[def.id];
+    const card = document.createElement('div');
+    card.className = 'meter-card';
+    const disabled = def.toggleable && !m.vorhanden;
+    card.innerHTML = `
+      <div class="meter-head">
+        <div class="meter-name">${def.label}${def.toggleable ? `
+            <label style="font-weight:400;font-size:12px;margin-left:12px;color:var(--ink-soft);">
+              <input type="checkbox" ${m.vorhanden?'checked':''} onchange="state.meters['${def.id}'].vorhanden=this.checked; renderMeters(); scheduleSave();"> vorhanden
+            </label>` : ''}
+        </div>
+        <label class="check-pill ${m.fotoErstellt?'on':''}">
+          <input type="checkbox" ${m.fotoErstellt?'checked':''} onchange="state.meters['${def.id}'].fotoErstellt=this.checked; renderMeters(); scheduleSave();">
+          Foto erstellt
+        </label>
+      </div>
+      ${disabled ? '<div class="toggle-off-note">Nicht vorhanden – kein Foto erforderlich.</div>' : `
+      <div class="grid3">
+        <div><label class="field-label">Zählernummer</label><input class="mono" type="text" value="${escAttr(m.nummer)}" oninput="state.meters['${def.id}'].nummer=this.value; scheduleSave();"></div>
+        <div><label class="field-label">Zählerstand</label><input class="mono" type="text" value="${escAttr(m.stand)}" oninput="state.meters['${def.id}'].stand=this.value; scheduleSave();"></div>
+        <div>
+          <label class="field-label">Foto</label>
+          <label class="upload-btn">Datei wählen<input type="file" accept="image/*" onchange="uploadMeterPhoto(event,'${def.id}')"></label>
+        </div>
+      </div>
+      <label class="field-label" style="margin-top:10px;">Notiz</label>
+      <textarea rows="1" oninput="state.meters['${def.id}'].notiz=this.value; scheduleSave();">${escHtml(m.notiz)}</textarea>
+      <div class="photo-row">${m.photo ? thumbHtml(m.photo, `removeMeterPhoto('${def.id}')`) : ''}</div>
+      `}
+    `;
+    c.appendChild(card);
+  });
+}
+async function uploadMeterPhoto(evt, id){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImage(file, 700, 0.6);
+  state.meters[id].photo = dataUrl;
+  state.meters[id].fotoErstellt = true;
+  renderMeters();
+  scheduleSave();
+}
+function removeMeterPhoto(id){ state.meters[id].photo = null; renderMeters(); scheduleSave(); }
+
+// ---------- rooms ----------
+function renderRooms(){
+  const c = document.getElementById('roomList');
+  c.innerHTML = '';
+  state.rooms.forEach((room, ri) => {
+    const card = document.createElement('div');
+    card.className = 'room-card' + (room._open ? ' open' : '');
+    const mangelCount = room.maengel.length;
+    card.innerHTML = `
+      <div class="room-head" onclick="toggleRoom(${ri})">
+        <div class="room-head-left">
+          <span class="room-index">${String(ri+1).padStart(2,'0')}</span>
+          <input type="text" placeholder="Raum ${ri+1} benennen (z.B. Wohnzimmer)" value="${escAttr(room.name)}"
+            onclick="event.stopPropagation()"
+            oninput="state.rooms[${ri}].name=this.value; scheduleSave();" style="max-width:320px;">
+          ${mangelCount ? `<span class="mangel-count">${mangelCount} Mangel${mangelCount>1?'-Einträge':''}</span>` : ''}
+        </div>
+        <span class="chevron">▶</span>
+      </div>
+      <div class="room-body">
+        <label class="field-label">Fotos Raum (allgemein)</label>
+        <div class="photo-row">
+          ${room.photos.map((p,pi) => thumbHtml(p, `removeRoomPhoto(${ri},${pi})`)).join('')}
+          <label class="upload-btn">+ Foto<input type="file" accept="image/*" onchange="uploadRoomPhoto(event,${ri})"></label>
+        </div>
+
+        <label class="field-label" style="margin-top:18px;">Mängel</label>
+        <div id="maengel-${ri}"></div>
+        <button class="btn ghost small no-print" onclick="addMangel(${ri})">+ Mangel hinzufügen</button>
+      </div>
+    `;
+    c.appendChild(card);
+    renderMaengel(ri);
+  });
+}
+function toggleRoom(ri){ state.rooms[ri]._open = !state.rooms[ri]._open; renderRooms(); }
+async function uploadRoomPhoto(evt, ri){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImage(file, 700, 0.6);
+  state.rooms[ri].photos.push(dataUrl);
+  renderRooms();
+  state.rooms[ri]._open = true;
+  scheduleSave();
+}
+function removeRoomPhoto(ri,pi){ state.rooms[ri].photos.splice(pi,1); renderRooms(); state.rooms[ri]._open=true; scheduleSave(); }
+
+function renderMaengel(ri){
+  const c = document.getElementById('maengel-'+ri);
+  if(!c) return;
+  c.innerHTML = '';
+  state.rooms[ri].maengel.forEach((mg, mi) => {
+    const row = document.createElement('div');
+    row.className = 'mangel-row';
+    row.innerHTML = `
+      <div style="flex:1;">
+        <textarea rows="2" placeholder="Beschreibung des Mangels" oninput="state.rooms[${ri}].maengel[${mi}].desc=this.value; scheduleSave();">${escHtml(mg.desc)}</textarea>
+        <div class="photo-row">
+          ${mg.photo ? thumbHtml(mg.photo, `removeMangelPhoto(${ri},${mi})`) : `<label class="upload-btn">+ Foto<input type="file" accept="image/*" onchange="uploadMangelPhoto(event,${ri},${mi})"></label>`}
+        </div>
+      </div>
+      <button class="btn danger small no-print" onclick="removeMangel(${ri},${mi})">Entfernen</button>
+    `;
+    c.appendChild(row);
+  });
+}
+function addMangel(ri){ state.rooms[ri].maengel.push({desc:'', photo:null}); state.rooms[ri]._open = true; renderRooms(); scheduleSave(); }
+function removeMangel(ri,mi){ state.rooms[ri].maengel.splice(mi,1); renderRooms(); state.rooms[ri]._open=true; scheduleSave(); }
+async function uploadMangelPhoto(evt, ri, mi){
+  const file = evt.target.files[0];
+  if(!file) return;
+  const dataUrl = await resizeImage(file, 700, 0.6);
+  state.rooms[ri].maengel[mi].photo = dataUrl;
+  state.rooms[ri]._open = true;
+  renderRooms();
+  scheduleSave();
+}
+function removeMangelPhoto(ri,mi){ state.rooms[ri].maengel[mi].photo = null; renderRooms(); state.rooms[ri]._open=true; scheduleSave(); }
+
+// ---------- signatures ----------
+function setupSignaturePad(canvasId, stateKey){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.lineWidth = 2;
+  ctx.lineCap = 'round';
+  ctx.strokeStyle = '#1F2937';
+  let drawing = false;
+
+  function ratio(){ return {x: canvas.width/canvas.clientWidth, y: canvas.height/canvas.clientHeight}; }
+  function pos(e){
+    const r = canvas.getBoundingClientRect();
+    const rt = ratio();
+    return {x:(e.clientX - r.left)*rt.x, y:(e.clientY - r.top)*rt.y};
+  }
+  canvas.addEventListener('pointerdown', e => {
+    drawing = true;
+    const p = pos(e);
+    ctx.beginPath();
+    ctx.moveTo(p.x, p.y);
+  });
+  canvas.addEventListener('pointermove', e => {
+    if(!drawing) return;
+    const p = pos(e);
+    ctx.lineTo(p.x, p.y);
+    ctx.stroke();
+  });
+  window.addEventListener('pointerup', () => {
+    if(drawing){
+      drawing = false;
+      state.sig[stateKey] = canvas.toDataURL('image/png');
+      scheduleSave();
+      checkBothSignedAndAutoSend();
+    }
+  });
+}
+function clearSig(canvasId){
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  const key = canvasId === 'sigUebergeber' ? 'imgUebergeber' : 'imgUebernehmer';
+  state.sig[key] = null;
+  state._emailTriggered = false;
+  scheduleSave();
+  updateSignBanner();
+}
+function restoreSig(canvasId, dataUrl){
+  if(!dataUrl) return;
+  const canvas = document.getElementById(canvasId);
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  img.src = dataUrl;
+}
+
+// ---------- grund der übergabe ----------
+function setGrund(value){
+  state.grund = value;
+  applyGrund();
+  scheduleSave();
+}
+function applyGrund(){
+  document.getElementById('grundEinzugLabel').classList.toggle('active', state.grund === 'Einzug');
+  document.getElementById('grundAuszugLabel').classList.toggle('active', state.grund === 'Auszug');
+  document.querySelector('#grundEinzugLabel input').checked = state.grund === 'Einzug';
+  document.querySelector('#grundAuszugLabel input').checked = state.grund === 'Auszug';
+  document.getElementById('meldeanschriftBlock').style.display = state.grund === 'Auszug' ? 'block' : 'none';
+}
+
+// ---------- Dateiname & Betreff ----------
+function sanitizeForFilename(str){
+  return (str || '')
+    .replace(/ä/g,'ae').replace(/ö/g,'oe').replace(/ü/g,'ue').replace(/ß/g,'ss')
+    .replace(/Ä/g,'Ae').replace(/Ö/g,'Oe').replace(/Ü/g,'Ue')
+    .replace(/[^a-zA-Z0-9]+/g,'_')
+    .replace(/^_+|_+$/g,'');
+}
+function getMieterName(){
+  const found = state.attendees.find(a => a.role === 'Mieter' && a.name);
+  if(found) return found.name;
+  return state.sig.nameUebernehmer || '';
+}
+function buildProtocolFilename(){
+  const mieter = getMieterName();
+  const parts = ['Uebergabeprotokoll'];
+  if(state.address) parts.push(sanitizeForFilename(state.address));
+  if(state.lage) parts.push(sanitizeForFilename(state.lage));
+  if(mieter) parts.push(sanitizeForFilename(mieter));
+  return parts.filter(Boolean).join('_') + '.pdf';
+}
+function buildEmailSubject(){
+  const mieter = getMieterName();
+  let subj = 'Übergabeprotokoll';
+  if(state.address) subj += ' ' + state.address;
+  if(state.lage) subj += ', ' + state.lage;
+  if(mieter) subj += ' – ' + mieter;
+  return subj;
+}
+function buildEmailBody(){
+  return 'Anbei das unterschriebene Übergabeprotokoll (' + (state.grund || 'Übergabe') + ').\n\nMit freundlichen Grüßen';
+}
+
+// ---------- PDF & E-Mail bei vollständigen Unterschriften ----------
+function updateSignBanner(){
+  const banner = document.getElementById('signBanner');
+  const text = document.getElementById('signBannerText');
+  const bothSigned = !!(state.sig.imgUebergeber && state.sig.imgUebernehmer);
+  banner.classList.toggle('pending', !bothSigned);
+  if(bothSigned){
+    text.textContent = 'Beide Unterschriften liegen vor.';
+  } else if(state.sig.imgUebergeber || state.sig.imgUebernehmer){
+    text.textContent = 'Es fehlt noch eine Unterschrift.';
+  } else {
+    text.textContent = 'Noch keine der beiden Unterschriften vorhanden.';
+  }
+  return bothSigned;
+}
+
+function checkBothSignedAndAutoSend(){
+  updateSignBanner();
+}
+
+async function buildPdfBlob(){
+  const sheet = document.querySelector('.sheet');
+  const filename = buildProtocolFilename();
+  document.body.classList.add('exporting');
+  const prevOpen = state.rooms.map(r => !!r._open);
+  state.rooms.forEach(r => r._open = true);
+  renderRooms();
+
+  const opt = {
+    margin: 8,
+    filename: filename,
+    image: { type:'jpeg', quality:0.85 },
+    html2canvas: { scale:2, useCORS:true },
+    jsPDF: { unit:'mm', format:'a4', orientation:'portrait' },
+    pagebreak: { mode:['css','legacy'] }
+  };
+
+  try{
+    const worker = html2pdf().set(opt).from(sheet).toPdf();
+    const pdf = await worker.get('pdf');
+    const blob = pdf.output('blob');
+    return {blob, filename};
+  } finally {
+    document.body.classList.remove('exporting');
+    state.rooms.forEach((r,i) => r._open = prevOpen[i]);
+    renderRooms();
+  }
+}
+
+async function doPdfAndMail(){
+  if(typeof html2pdf === 'undefined'){
+    alert('PDF-Bibliothek konnte nicht geladen werden. Bitte Internetverbindung prüfen.');
+    return false;
+  }
+
+  let result;
+  try{
+    result = await buildPdfBlob();
+  } catch(err){
+    alert('PDF-Erstellung fehlgeschlagen: ' + err.message);
+    return false;
+  }
+  const {blob, filename} = result;
+  const subject = buildEmailSubject();
+  const body = buildEmailBody();
+  const to = state.mieterEmail || '';
+  const cc = 'info@immobilien-class.de';
+
+  const file = new File([blob], filename, {type:'application/pdf'});
+  const canShareFile = navigator.canShare && navigator.canShare({files:[file]});
+
+  if(canShareFile){
+    try{
+      await navigator.share({
+        files:[file],
+        title: subject,
+        text: body + '\n\n(CC bitte manuell ergänzen: ' + cc + ')'
+      });
+      return true;
+    } catch(err){
+      if(err.name === 'AbortError'){
+        return true; // Nutzer hat Teilen-Dialog geschlossen – PDF wurde erzeugt
+      }
+      // sonst: Fallback
+    }
+  }
+
+  // Fallback (v.a. Desktop-Browser ohne Datei-Freigabe): Download + mailto ohne Anhang
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+
+  const mailBody = body + '\n\nHinweis: Bitte die soeben heruntergeladene Datei "' + filename + '" manuell an diese E-Mail anhängen.';
+  window.open(`mailto:${encodeURIComponent(to)}?cc=${encodeURIComponent(cc)}&subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody)}`);
+  return true;
+}
+
+// ---------- Notion-Export (nur Daten, keine Bilder) ----------
+function buildProtocolSummaryText(){
+  const lines = [];
+  lines.push('Grund der Übergabe: ' + (state.grund || '-'));
+  lines.push('Objektanschrift: ' + (state.address || '-'));
+  lines.push('Lage/Bezeichnung: ' + (state.lage || '-'));
+  lines.push('Datum der Übergabe: ' + (state.datum || '-'));
+  if(state.grund === 'Auszug'){
+    lines.push('Neue Meldeanschrift Mieter: ' + (state.neueMeldeanschrift || '-'));
+  }
+  lines.push('Handynummer Mieter: ' + (state.mieterHandy || '-'));
+  lines.push('E-Mail Mieter: ' + (state.mieterEmail || '-'));
+  lines.push('');
+  lines.push('Anwesende Personen:');
+  state.attendees.forEach(a => lines.push('- ' + (a.name || '(ohne Namen)') + ' (' + a.role + ')'));
+  lines.push('');
+  lines.push('Zählerstände:');
+  METER_DEFS.forEach(def => {
+    const m = state.meters[def.id];
+    if(def.toggleable && !m.vorhanden){
+      lines.push('- ' + def.label + ': nicht vorhanden');
+    } else {
+      lines.push('- ' + def.label + ': Nr. ' + (m.nummer || '-') + ', Stand ' + (m.stand || '-') +
+        (m.notiz ? ', Notiz: ' + m.notiz : '') + (m.fotoErstellt ? ' [Foto erstellt]' : ' [Foto fehlt]'));
+    }
+  });
+  lines.push('');
+  lines.push('Räume:');
+  state.rooms.forEach((r, i) => {
+    if(!r.name && r.maengel.length === 0) return;
+    lines.push('- ' + (r.name || ('Zimmer ' + (i+1))) + ':');
+    if(r.maengel.length === 0){
+      lines.push('  keine Mängel erfasst');
+    } else {
+      r.maengel.forEach(mg => lines.push('  Mangel: ' + (mg.desc || '(ohne Beschreibung)')));
+    }
+  });
+  lines.push('');
+  lines.push('Unterschriften: Übergeber ' + (state.sig.nameUebergeber || '-') +
+    ', Übernehmer ' + (state.sig.nameUebernehmer || '-') +
+    ', Ort ' + (state.sig.ort || '-') + ', Datum ' + (state.sig.datum || '-'));
+  return lines.join('\n');
+}
+
+async function sendToNotion(){
+  const summary = buildProtocolSummaryText();
+  const title = 'Übergabeprotokoll – ' + (state.address || 'ohne Adresse') + ' – ' + (state.datum || '');
+  try{
+    const resp = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-6',
+        max_tokens: 1000,
+        messages: [{
+          role: 'user',
+          content: 'Lege in meinem Notion-Workspace einen Eintrag für ein Wohnungsübergabeprotokoll an. ' +
+            'Suche zuerst nach einer passenden bestehenden Datenbank/Seite (z.B. "Wohnungsübergabe" oder "Übergabeprotokolle"). ' +
+            'Falls keine existiert, lege eine neue Seite mit dem Titel "' + title + '" an. ' +
+            'Trage ausschließlich die folgenden Textdaten ein - keine Bilder, keine Bild-Links, keine Base64-Daten:\n\n' + summary
+        }],
+        mcp_servers: [{type: 'url', url: 'https://mcp.notion.com/mcp', name: 'notion-mcp'}]
+      })
+    });
+    const data = await resp.json();
+    if(data.error){
+      return {ok:false, msg:'Notion-Fehler: ' + data.error.message};
+    }
+    const hadToolResult = (data.content || []).some(b => b.type === 'mcp_tool_result');
+    const textReply = (data.content || []).filter(b => b.type === 'text').map(b => b.text).join(' ');
+    if(hadToolResult){
+      return {ok:true, msg:'In Notion abgelegt (nur Textdaten, ohne Bilder)'};
+    }
+    return {ok:false, msg: textReply || 'Notion-Verbindung nicht bestätigt. Bitte Notion-Connector prüfen.'};
+  } catch(e){
+    return {ok:false, msg:'Fehler beim Notion-Export: ' + e.message};
+  }
+}
+
+// ---------- Abschluss-Orchestrierung ----------
+function setStep(id, statusClass, symbol, label){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.className = statusClass;
+  el.textContent = symbol + ' ' + label;
+}
+
+async function finalizeProtocol(){
+  // Minimalprüfung: wenigstens eine Objektanschrift sollte vorhanden sein
+  if(!state.address){
+    if(!confirm('Es ist keine Objektanschrift eingetragen. Trotzdem fertigstellen?')) return;
+  }
+
+  const btn = document.getElementById('finishBtn');
+  btn.disabled = true;
+
+  // Overlay öffnen
+  document.getElementById('finishProgress').style.display = 'block';
+  document.getElementById('finishDone').style.display = 'none';
+  document.getElementById('finishOverlay').classList.add('open');
+  setStep('stepPdf', 'step-run', '⟳', 'PDF erstellen & Mailversand …');
+  setStep('stepNotion', 'step-wait', '◦', 'Daten in Notion ablegen');
+
+  // 1) PDF + Mail (immer)
+  let pdfOk = false;
+  try{ pdfOk = await doPdfAndMail(); }catch(e){ pdfOk = false; }
+  setStep('stepPdf', pdfOk ? 'step-done' : 'step-run', pdfOk ? '✓' : '⚠',
+    pdfOk ? 'PDF erstellt & Mailversand geöffnet' : 'PDF/Mail mit Hinweis abgeschlossen');
+
+  // 2) Notion (immer)
+  setStep('stepNotion', 'step-run', '⟳', 'Daten in Notion ablegen …');
+  let notionRes = {ok:false, msg:''};
+  try{ notionRes = await sendToNotion(); }catch(e){ notionRes = {ok:false, msg:e.message}; }
+  setStep('stepNotion', notionRes.ok ? 'step-done' : 'step-run', notionRes.ok ? '✓' : '⚠',
+    notionRes.ok ? 'In Notion abgelegt' : (notionRes.msg || 'Notion nicht bestätigt'));
+
+  // Kurze Pause, dann Fertig-Ansicht
+  setTimeout(() => {
+    document.getElementById('finishProgress').style.display = 'none';
+    document.getElementById('finishDone').style.display = 'block';
+  }, 900);
+
+  // Vorgang abgeschlossen -> Speicher leeren, damit nächste Öffnung leer startet
+  await clearStorage();
+}
+
+function closeFinishOverlay(){
+  document.getElementById('finishOverlay').classList.remove('open');
+  document.getElementById('finishBtn').disabled = false;
+  // Formular für die nächste Wohnung leeren
+  state = defaultState();
+  renderAll();
+  clearStorage();
+  setStatus('Bereit für die nächste Wohnung', false);
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ---------- utils ----------
+function escAttr(s){ return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;'); }
+function escHtml(s){ return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'); }
+
+function renderAll(){
+  document.getElementById('address').value = state.address;
+  document.getElementById('lage').value = state.lage;
+  document.getElementById('datum').value = state.datum;
+  document.getElementById('sigOrt').value = state.sig.ort;
+  document.getElementById('sigDatum').value = state.sig.datum;
+  document.getElementById('nameUebergeber').value = state.sig.nameUebergeber;
+  document.getElementById('nameUebernehmer').value = state.sig.nameUebernehmer;
+  document.getElementById('neueMeldeanschrift').value = state.neueMeldeanschrift;
+  document.getElementById('mieterHandy').value = state.mieterHandy;
+  document.getElementById('mieterEmail').value = state.mieterEmail;
+  applyGrund();
+  renderAttendees();
+  renderMeters();
+  renderRooms();
+  updateStamp();
+  restoreSig('sigUebergeber', state.sig.imgUebergeber);
+  restoreSig('sigUebernehmer', state.sig.imgUebernehmer);
+  updateSignBanner();
+}
+
+document.getElementById('address').addEventListener('input', e => { state.address = e.target.value; scheduleSave(); });
+document.getElementById('lage').addEventListener('input', e => { state.lage = e.target.value; scheduleSave(); });
+document.getElementById('datum').addEventListener('input', e => { state.datum = e.target.value; updateStamp(); scheduleSave(); });
+document.getElementById('sigOrt').addEventListener('input', e => { state.sig.ort = e.target.value; scheduleSave(); });
+document.getElementById('sigDatum').addEventListener('input', e => { state.sig.datum = e.target.value; scheduleSave(); });
+document.getElementById('nameUebergeber').addEventListener('input', e => { state.sig.nameUebergeber = e.target.value; scheduleSave(); });
+document.getElementById('nameUebernehmer').addEventListener('input', e => { state.sig.nameUebernehmer = e.target.value; scheduleSave(); });
+document.getElementById('neueMeldeanschrift').addEventListener('input', e => { state.neueMeldeanschrift = e.target.value; scheduleSave(); });
+document.getElementById('mieterHandy').addEventListener('input', e => { state.mieterHandy = e.target.value; scheduleSave(); });
+document.getElementById('mieterEmail').addEventListener('input', e => { state.mieterEmail = e.target.value; scheduleSave(); });
+
+setupSignaturePad('sigUebergeber', 'imgUebergeber');
+setupSignaturePad('sigUebernehmer', 'imgUebernehmer');
+
+loadState();
+</script>
+</body>
+</html>
